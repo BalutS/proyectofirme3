@@ -11,12 +11,34 @@ import java.util.ArrayList;
  * @author river
  */
 public class Asignatura {
+    private int codigo; // New field
     private String nombre;
     private ArrayList<Calificacion> calificaciones;
 
+    public Asignatura() {
+        this.codigo = 0; // Initialize codigo
+        this.calificaciones = new ArrayList<>();
+    }
+
     public Asignatura(String nombre) {
+        this(); // Calls default constructor to initialize codigo and calificaciones list
         this.nombre = nombre;
-        calificaciones = new ArrayList<>();
+    }
+
+    // Constructor for full reconstruction including codigo
+    public Asignatura(int codigo, String nombre, ArrayList<Calificacion> calificaciones) {
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.calificaciones = (calificaciones != null) ? calificaciones : new ArrayList<>();
+    }
+
+    // Getter and Setter for codigo
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
     }
     
     public void agregarCalificacion(Calificacion cal){
@@ -32,16 +54,24 @@ public class Asignatura {
     }
     
     public float promedio(){
+        if (calificaciones == null || calificaciones.isEmpty()) {
+            return 0.0f; // Or handle as an error/NaN as appropriate
+        }
         float sum = 0;
         for (Calificacion calificacion : calificaciones) {
             sum += calificacion.getNota();
         }
-        return sum/calificaciones.size();
+        return sum / calificaciones.size();
     }
 
     @Override
     public String toString() {
-        return "Asignatura{" + "nombre=" + nombre + ", calificaciones=" + promedio() + '}';
+        // Consider if promedio() can cause issues if calificaciones is empty or null
+        float avg = 0.0f;
+        if (calificaciones != null && !calificaciones.isEmpty()) {
+            avg = promedio();
+        }
+        return "Asignatura{" + "codigo=" + codigo + ", nombre=" + nombre + ", promedio_calificaciones=" + avg + '}';
     }
     
     
