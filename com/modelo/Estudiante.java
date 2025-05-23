@@ -6,6 +6,12 @@ public class Estudiante extends Persona {
     private Curso curso;
     private ArrayList<Asignatura> asignaturas;
 
+    public Estudiante() {
+        super(); // Calls Persona's default constructor
+        this.asignaturas = new ArrayList<>();
+        this.curso = new Curso(); // Or some default initialization
+    }
+
     public Estudiante(ArrayList<Asignatura> asignaturas, String nombre, int edad, int cedula, int codigo, String tipo) {
         super(nombre, edad, cedula, codigo, tipo);
         curso = new Curso();
@@ -35,11 +41,15 @@ public class Estudiante extends Persona {
     }
     
     private float promedioGeneral() {
+        if (asignaturas == null || asignaturas.isEmpty()) {
+            return 0.0f; // Or handle as an error/NaN as appropriate
+        }
         float sum = 0;
         for (Asignatura asignatura : asignaturas) {
-            sum += asignatura.promedio();
+            // Ensure asignatura.promedio() also handles potential empty calificaciones
+            sum += asignatura.promedio(); 
         }
-        return sum/asignaturas.size();
+        return sum / asignaturas.size();
     }
 
     @Override
