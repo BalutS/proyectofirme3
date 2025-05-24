@@ -18,69 +18,79 @@ public class Estudiante extends Persona {
         this.asignaturas = asignaturas;
     }
     
-    public Asignatura buscarAsignatura(String nombre){
-        Asignatura asig = null;
-        for (Asignatura asignatura : getAsignaturas()) {
-            if (asignatura.getNombre().equalsIgnoreCase(nombre)) {
-                asig = asignatura;
+    // Busca una asignatura por nombre en la lista de asignaturas del estudiante.
+    public Asignatura buscarAsignatura(String nombre) { // El parámetro 'nombre' ya está en español
+        Asignatura asignaturaEncontrada = null; // 'asig' a 'asignaturaEncontrada'
+        // Se asume que Asignatura.obtenerNombre() será el nuevo nombre después de traducir Asignatura.java
+        // y que obtenerAsignaturas() es el nuevo nombre para getAsignaturas()
+        for (Asignatura asignatura : obtenerAsignaturas()) { 
+            if (asignatura.obtenerNombre().equalsIgnoreCase(nombre)) { // Asumiendo Asignatura.obtenerNombre()
+                asignaturaEncontrada = asignatura;
             }
         }
-        return asig;
+        return asignaturaEncontrada;
     }
     
-    public String reporteAcademico(){
+    // Genera un reporte académico del estudiante.
+    public String reporteAcademico() { // Ya en español
         return toString() + "\n Asignaturas: \n" +  promedioAsignaturas() + "\n Promedio General:" + promedioGeneral();
     }
     
-    private String promedioAsignaturas(){
-        String lis = "";
-        for (Asignatura asignatura : asignaturas) {
-            lis = asignatura.toString() + "\n";
+    // Calcula y formatea el promedio de las asignaturas.
+    private String promedioAsignaturas() {
+        String listaStr = ""; // 'lis' a 'listaStr'
+        if (this.asignaturas != null) {
+            for (Asignatura asignatura : this.asignaturas) {
+                listaStr += asignatura.toString() + "\n"; // Asignatura.toString() se mantendrá
+            }
         }
-        return lis;
+        return listaStr;
     }
     
+    // Calcula el promedio general de todas las asignaturas.
     private float promedioGeneral() {
-        if (asignaturas == null || asignaturas.isEmpty()) {
-            return 0.0f; // Or handle as an error/NaN as appropriate
+        if (this.asignaturas == null || this.asignaturas.isEmpty()) {
+            return 0.0f; // Manejo de lista vacía o nula
         }
-        float sum = 0;
-        for (Asignatura asignatura : asignaturas) {
-            // Ensure asignatura.promedio() also handles potential empty calificaciones
-            sum += asignatura.promedio(); 
+        float suma = 0; // 'sum' a 'suma'
+        for (Asignatura asignatura : this.asignaturas) {
+            // Asignatura.promedio() ya está en español
+            suma += asignatura.promedio(); 
         }
-        return sum / asignaturas.size();
+        return suma / this.asignaturas.size();
     }
 
     @Override
     public String toString() {
-        return super.toString() + ", curso:" + curso.toString();
+        // super.toString() llamará al toString() de Persona (ya modificado)
+        // curso.toString() se manejará cuando se traduzca Curso.java
+        return super.toString() + ", curso:" + (this.curso != null ? this.curso.toString() : "N/A");
     }
     
     
-
-    public ArrayList<Asignatura> getAsignaturas() {
+    // Obtiene la lista de asignaturas del estudiante.
+    public ArrayList<Asignatura> obtenerAsignaturas() { // Renombrado de getAsignaturas
         return asignaturas;
     }
 
     /**
-     * @param asignaturas the asignaturas to set
+     * @param asignaturas las asignaturas a establecer
      */
-    public void setAsignaturas(ArrayList<Asignatura> asignaturas) {
+    public void establecerAsignaturas(ArrayList<Asignatura> asignaturas) { // Renombrado de setAsignaturas
         this.asignaturas = asignaturas;
     }
 
     /**
-     * @return the curso
+     * @return el curso
      */
-    public Curso getCurso() {
+    public Curso obtenerCurso() { // Renombrado de getCurso
         return curso;
     }
 
     /**
-     * @param curso the curso to set
+     * @param curso el curso a establecer
      */
-    public void setCurso(Curso curso) {
+    public void establecerCurso(Curso curso) { // Renombrado de setCurso
         this.curso = curso;
     }
     

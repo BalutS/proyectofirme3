@@ -4,150 +4,138 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// Define la clase Colegio que gestiona la lógica de negocio principal.
 public class Colegio {
     private String nombre;
-    private final EstudianteDao estudianteDao;
-    private final ProfesorDao profesorDao;
-    private final CursoDao cursoDao;
-    private final AsignaturaDao asignaturaDao;
+    // Campos DAO ya actualizados a la convención XXXDAO
+    private final EstudianteDAO estudianteDAO;
+    private final ProfesorDAO profesorDAO;
+    private final CursoDAO cursoDAO;
+    private final AsignaturaDAO asignaturaDAO;
 
     public Colegio(String nombre) {
         this.nombre = nombre;
-        this.estudianteDao = new EstudianteDao();
-        this.profesorDao = new ProfesorDao();
-        this.cursoDao = new CursoDao();
-        this.asignaturaDao = new AsignaturaDao();
+        this.estudianteDAO = new EstudianteDAO();
+        this.profesorDAO = new ProfesorDAO();
+        this.cursoDAO = new CursoDAO();
+        this.asignaturaDAO = new AsignaturaDAO();
     }
 
-    // 1. Update agregar<Entity> methods
-    public void agregarEstudiante(Estudiante est) {
-        if (est == null) return;
-        // Ensure Estudiante has Curso and Asignaturas as placeholders if they exist
-        // The DAO for Estudiante should handle saving IDs of related entities.
-        estudianteDao.crear(est);
+    // --- Métodos para agregar entidades ---
+    public void agregarEstudiante(Estudiante estudiante) { // Parámetro 'est' a 'estudiante'
+        if (estudiante == null) return;
+        estudianteDAO.crear(estudiante);
     }
 
-    public void agregarProfesor(Profesor prof) {
-        if (prof == null) return;
-        // Ensure Profesor has Curso as a placeholder if it exists
-        profesorDao.crear(prof);
+    public void agregarProfesor(Profesor profesor) { // Parámetro 'prof' a 'profesor'
+        if (profesor == null) return;
+        profesorDAO.crear(profesor);
     }
 
     public void agregarCurso(Curso curso) {
         if (curso == null) return;
-        // Ensure Curso has Profesor and Estudiantes as placeholders
-        cursoDao.crear(curso);
+        cursoDAO.crear(curso);
     }
 
-    public void agregarAsignatura(Asignatura asig) {
-        if (asig == null) return;
-        // Ensure Asignatura has Calificaciones (if any)
-        asignaturaDao.crear(asig);
+    public void agregarAsignatura(Asignatura asignatura) { // Parámetro 'asig' a 'asignatura'
+        if (asignatura == null) return;
+        asignaturaDAO.crear(asignatura);
     }
 
-    // 2. Update buscar<Entity> methods
-    public Profesor buscarProfesor(int cod) {
-        return profesorDao.leer(cod);
+    // --- Métodos para buscar entidades ---
+    public Profesor buscarProfesor(int codigo) { // Parámetro 'cod' a 'codigo'
+        return profesorDAO.leerPorId(codigo); // Uso de leerPorId
     }
 
-    public Estudiante buscarEstudiante(int cod) {
-        return estudianteDao.leer(cod);
+    public Estudiante buscarEstudiante(int codigo) { // Parámetro 'cod' a 'codigo'
+        return estudianteDAO.leerPorId(codigo); // Uso de leerPorId
     }
 
     public Curso buscarCurso(int grado, int grupo) {
-        List<Curso> todosLosCursos = cursoDao.listarTodos();
+        List<Curso> todosLosCursos = cursoDAO.listarTodos();
         for (Curso curso : todosLosCursos) {
-            if (curso.getGrado() == grado && curso.getGrupo() == grupo) {
-                return curso; // Returns curso with placeholder relations
+            if (curso.obtenerGrado() == grado && curso.obtenerGrupo() == grupo) { // Uso de métodos traducidos
+                return curso; 
             }
         }
         return null;
     }
     
-    // Overload buscarCurso by codigo, which is more direct
+    // Sobrecarga para buscar curso por código, que es más directo.
     public Curso buscarCursoPorCodigo(int codigoCurso) {
-        return cursoDao.leer(codigoCurso); // Returns curso with placeholder relations
+        return cursoDAO.leerPorId(codigoCurso); // Uso de leerPorId
     }
-
 
     public Asignatura buscarAsignatura(String nombre) {
-        List<Asignatura> todasLasAsignaturas = asignaturaDao.listarTodos();
+        List<Asignatura> todasLasAsignaturas = asignaturaDAO.listarTodos();
         for (Asignatura asignatura : todasLasAsignaturas) {
-            if (asignatura.getNombre().equalsIgnoreCase(nombre)) {
-                return asignatura; // Returns asignatura with its calificaciones (if DAO populates them)
+            if (asignatura.obtenerNombre().equalsIgnoreCase(nombre)) { // Uso de método traducido
+                return asignatura; 
             }
         }
         return null;
     }
     
-    // Overload buscarAsignatura by codigo
+    // Sobrecarga para buscar asignatura por código.
     public Asignatura buscarAsignaturaPorCodigo(int codigoAsignatura) {
-        return asignaturaDao.leer(codigoAsignatura);
+        return asignaturaDAO.leerPorId(codigoAsignatura); // Uso de leerPorId
     }
 
-    // 3. Refactor relationship methods
+    // --- Métodos para gestionar relaciones ---
     public boolean agregarCursoAProfesor(int codigoProfesor, int codigoCurso) {
-        Profesor p = profesorDao.leer(codigoProfesor);
-        Curso c = cursoDao.leer(codigoCurso); 
+        Profesor profesor = profesorDAO.leerPorId(codigoProfesor); // 'p' a 'profesor', uso de leerPorId
+        Curso curso = cursoDAO.leerPorId(codigoCurso); // 'c' a 'curso', uso de leerPorId
 
-        if (p != null && c != null) {
+        if (profesor != null && curso != null) {
             Curso cursoParaProfesor = new Curso();
-            cursoParaProfesor.setCodigo(c.getCodigo());
-            cursoParaProfesor.setGrado(c.getGrado());
-            cursoParaProfesor.setGrupo(c.getGrupo());
+            cursoParaProfesor.establecerCodigo(curso.obtenerCodigo()); // Uso de métodos traducidos
+            cursoParaProfesor.establecerGrado(curso.obtenerGrado());
+            cursoParaProfesor.establecerGrupo(curso.obtenerGrupo());
 
             Profesor profesorParaCurso = new Profesor();
-            profesorParaCurso.setCodigo(p.getCodigo());
-            profesorParaCurso.setNombre(p.getNombre()); 
+            profesorParaCurso.establecerCodigo(profesor.obtenerCodigo());
+            profesorParaCurso.establecerNombre(profesor.obtenerNombre()); 
             
-            p.setCurso(cursoParaProfesor); 
-            c.setProfesor(profesorParaCurso); 
+            profesor.establecerCurso(cursoParaProfesor); 
+            curso.establecerProfesor(profesorParaCurso); 
 
-            // Assuming DAOs' actualizar methods are void and just print errors.
-            // If they returned boolean for success, we could check that too.
-            profesorDao.actualizar(p);
-            cursoDao.actualizar(c);
-            return true; // Indicate success
+            profesorDAO.actualizar(profesor); 
+            cursoDAO.actualizar(curso); 
+            return true; 
         } else {
             System.err.println("Colegio: Profesor o Curso no encontrado para agregarCursoAProfesor. Código Profesor: " + codigoProfesor + ", Código Curso: " + codigoCurso);
-            return false; // Indicate failure: one or both entities not found
+            return false; 
         }
     }
 
     public boolean agregarEstudianteACurso(int codigoEstudiante, int codigoCurso) {
-        Estudiante e = estudianteDao.leer(codigoEstudiante);
-        Curso c = cursoDao.leer(codigoCurso);
+        Estudiante estudiante = estudianteDAO.leerPorId(codigoEstudiante); // 'e' a 'estudiante', uso de leerPorId
+        Curso curso = cursoDAO.leerPorId(codigoCurso); // 'c' a 'curso', uso de leerPorId
 
-        if (e != null && c != null) {
-            // Create placeholders for setting relationships
+        if (estudiante != null && curso != null) {
             Curso cursoParaEstudiante = new Curso();
-            cursoParaEstudiante.setCodigo(c.getCodigo());
-            cursoParaEstudiante.setGrado(c.getGrado());
-            cursoParaEstudiante.setGrupo(c.getGrupo());
+            cursoParaEstudiante.establecerCodigo(curso.obtenerCodigo());
+            cursoParaEstudiante.establecerGrado(curso.obtenerGrado());
+            cursoParaEstudiante.establecerGrupo(curso.obtenerGrupo());
 
-            Estudiante estudianteParaCurso = new Estudiante(); // Placeholder with only ID
-            estudianteParaCurso.setCodigo(e.getCodigo());
-            // Optionally copy other essential fields if Curso.csvStringToCurso needs them for context, but ID is primary.
+            Estudiante estudianteParaCurso = new Estudiante(); 
+            estudianteParaCurso.establecerCodigo(estudiante.obtenerCodigo());
 
-            e.setCurso(cursoParaEstudiante); // Link placeholder to estudiante
+            estudiante.establecerCurso(cursoParaEstudiante); 
 
-            // Manage Curso's list of Estudiantes
-            // The Estudiante objects in c.getEstudiantes() are already placeholders (ID only) from CursoDao
-            // We need to ensure the new student is added if not present.
-            boolean found = false;
-            for (Estudiante estEnCurso : c.getEstudiantes()) {
-                if (estEnCurso.getCodigo() == e.getCodigo()) {
-                    found = true;
+            boolean encontrado = false; // 'found' a 'encontrado'
+            for (Estudiante estudianteEnCurso : curso.obtenerEstudiantes()) { // 'estEnCurso' a 'estudianteEnCurso', uso de método traducido
+                if (estudianteEnCurso.obtenerCodigo() == estudiante.obtenerCodigo()) { // Uso de método traducido
+                    encontrado = true;
                     break;
                 }
             }
-            if (!found) {
-                // Add the placeholder for the new student to the course's list
-                c.getEstudiantes().add(estudianteParaCurso);
+            if (!encontrado) {
+                curso.obtenerEstudiantes().add(estudianteParaCurso); // Uso de método traducido
             }
 
-            estudianteDao.actualizar(e);
-            cursoDao.actualizar(c);
+            estudianteDAO.actualizar(estudiante); 
+            cursoDAO.actualizar(curso); 
             return true;
         } else {
             System.err.println("Colegio: Estudiante o Curso no encontrado para agregarEstudianteACurso. Código Estudiante: " + codigoEstudiante + ", Código Curso: " + codigoCurso);
@@ -156,32 +144,26 @@ public class Colegio {
     }
 
     public boolean agregarAsignaturaAEstudiante(int codigoEstudiante, int codigoAsignatura) {
-        Estudiante e = estudianteDao.leer(codigoEstudiante);
-        Asignatura a = asignaturaDao.leer(codigoAsignatura);
+        Estudiante estudiante = estudianteDAO.leerPorId(codigoEstudiante); // 'e' a 'estudiante', uso de leerPorId
+        Asignatura asignatura = asignaturaDAO.leerPorId(codigoAsignatura); // 'a' a 'asignatura', uso de leerPorId
 
-        if (e != null && a != null) {
-            // Create a placeholder for the asignatura to be added to the student
+        if (estudiante != null && asignatura != null) {
             Asignatura asignaturaParaEstudiante = new Asignatura();
-            asignaturaParaEstudiante.setCodigo(a.getCodigo());
-            asignaturaParaEstudiante.setNombre(a.getNombre()); // Keep name for context
-            // No need to set calificaciones in this placeholder
+            asignaturaParaEstudiante.establecerCodigo(asignatura.obtenerCodigo());
+            asignaturaParaEstudiante.establecerNombre(asignatura.obtenerNombre()); 
 
-            // The Asignatura objects in e.getAsignaturas() are already placeholders (ID only) from EstudianteDao
-            // We need to ensure the new asignatura is added if not present.
-            boolean found = false;
-            for (Asignatura asigEnEst : e.getAsignaturas()) {
-                if (asigEnEst.getCodigo() == a.getCodigo()) {
-                    found = true;
+            boolean encontrado = false; // 'found' a 'encontrado'
+            for (Asignatura asignaturaEnEstudiante : estudiante.obtenerAsignaturas()) { // 'asigEnEst' a 'asignaturaEnEstudiante', uso de método traducido
+                if (asignaturaEnEstudiante.obtenerCodigo() == asignatura.obtenerCodigo()) { // Uso de método traducido
+                    encontrado = true;
                     break;
                 }
             }
-            if (!found) {
-                 // Add the placeholder for the new asignatura to the student's list
-                e.getAsignaturas().add(asignaturaParaEstudiante);
+            if (!encontrado) {
+                estudiante.obtenerAsignaturas().add(asignaturaParaEstudiante); // Uso de método traducido
             }
             
-            estudianteDao.actualizar(e);
-            // No update to Asignatura needed if it doesn't store a list of Estudiantes that are directly linked
+            estudianteDAO.actualizar(estudiante); 
             return true;
         } else {
             System.err.println("Colegio: Estudiante o Asignatura no encontrada para agregarAsignaturaAEstudiante. Código Estudiante: " + codigoEstudiante + ", Código Asignatura: " + codigoAsignatura);
@@ -189,147 +171,134 @@ public class Colegio {
         }
     }
 
-    // 4. Update reporting methods (Initial pass, hydration will be complex)
+    // --- Métodos de reporte (la hidratación puede ser compleja) ---
     public String reporteEstudiante(int codigoEstudiante) {
-        Estudiante e = estudianteDao.leer(codigoEstudiante);
-        if (e == null) {
-            return "Estudiante no encontrado.";
+        Estudiante estudiante = estudianteDAO.leerPorId(codigoEstudiante); // 'e' a 'estudiante', uso de leerPorId
+        if (estudiante == null) {
+            return "Estudiante no encontrado."; // Mensaje traducido
         }
 
-        // Hydrate Curso for Estudiante
-        if (e.getCurso() != null && e.getCurso().getCodigo() != 0) {
-            Curso cursoCompleto = cursoDao.leer(e.getCurso().getCodigo());
+        // Hidratar Curso para Estudiante
+        if (estudiante.obtenerCurso() != null && estudiante.obtenerCurso().obtenerCodigo() != 0) { // Uso de métodos traducidos
+            Curso cursoCompleto = cursoDAO.leerPorId(estudiante.obtenerCurso().obtenerCodigo()); // Uso de leerPorId
             if (cursoCompleto != null) {
-                 // We need to be careful here. cursoCompleto might have placeholder professor/estudiantes.
-                 // For now, let's assume Estudiante.reporteAcademico primarily uses Curso's direct fields (grado, grupo)
-                 // or its own (Estudiante's) perspective.
-                 // If Curso.toString() is called by reporteAcademico, that might need full hydration of Curso.
-                e.setCurso(cursoCompleto); // Set the more complete Curso object.
+                estudiante.establecerCurso(cursoCompleto); // Uso de método traducido
             }
         }
 
-        // Hydrate Asignaturas for Estudiante
-        if (e.getAsignaturas() != null && !e.getAsignaturas().isEmpty()) {
+        // Hidratar Asignaturas para Estudiante
+        if (estudiante.obtenerAsignaturas() != null && !estudiante.obtenerAsignaturas().isEmpty()) { // Uso de método traducido
             ArrayList<Asignatura> asignaturasCompletas = new ArrayList<>();
-            for (Asignatura asigPlaceholder : e.getAsignaturas()) {
-                if (asigPlaceholder.getCodigo() != 0) {
-                    Asignatura asignaturaCompleta = asignaturaDao.leer(asigPlaceholder.getCodigo());
+            for (Asignatura asignaturaMarcadorPosicion : estudiante.obtenerAsignaturas()) { // 'asigPlaceholder' a 'asignaturaMarcadorPosicion'
+                if (asignaturaMarcadorPosicion.obtenerCodigo() != 0) { // Uso de método traducido
+                    Asignatura asignaturaCompleta = asignaturaDAO.leerPorId(asignaturaMarcadorPosicion.obtenerCodigo()); // Uso de leerPorId
                     if (asignaturaCompleta != null) {
-                        // AsignaturaDao.leer should return Asignatura with its Calificaciones populated.
                         asignaturasCompletas.add(asignaturaCompleta);
                     } else {
-                        asignaturasCompletas.add(asigPlaceholder); // Keep placeholder if full not found
+                        asignaturasCompletas.add(asignaturaMarcadorPosicion); 
                     }
                 }
             }
-            e.setAsignaturas(asignaturasCompletas);
+            estudiante.establecerAsignaturas(asignaturasCompletas); // Uso de método traducido
         }
-        return e.reporteAcademico();
+        return estudiante.reporteAcademico(); // El método reporteAcademico ya está en español
     }
 
     public String infoCurso(int codigoCurso) {
-        Curso c = cursoDao.leer(codigoCurso);
-        if (c == null) {
-            return "Curso no encontrado.";
+        Curso curso = cursoDAO.leerPorId(codigoCurso); // 'c' a 'curso', uso de leerPorId
+        if (curso == null) {
+            return "Curso no encontrado."; // Mensaje traducido
         }
 
-        // Hydrate Profesor for Curso
-        if (c.getProfesor() != null && c.getProfesor().getCodigo() != 0) {
-            Profesor pCompleto = profesorDao.leer(c.getProfesor().getCodigo());
-            if (pCompleto != null) {
-                 // If pCompleto.getCurso() is used by Curso.infoCurso, it might be a placeholder.
-                 // Let's assume Curso.infoCurso focuses on Profesor's direct details.
-                c.setProfesor(pCompleto);
+        // Hidratar Profesor para Curso
+        if (curso.obtenerProfesor() != null && curso.obtenerProfesor().obtenerCodigo() != 0) { // Uso de métodos traducidos
+            Profesor profesorCompleto = profesorDAO.leerPorId(curso.obtenerProfesor().obtenerCodigo()); // 'pCompleto' a 'profesorCompleto', uso de leerPorId
+            if (profesorCompleto != null) {
+                curso.establecerProfesor(profesorCompleto); // Uso de método traducido
             }
         }
 
-        // Hydrate Estudiantes for Curso
-        if (c.getEstudiantes() != null && !c.getEstudiantes().isEmpty()) {
+        // Hidratar Estudiantes para Curso
+        if (curso.obtenerEstudiantes() != null && !curso.obtenerEstudiantes().isEmpty()) { // Uso de método traducido
             ArrayList<Estudiante> estudiantesCompletos = new ArrayList<>();
-            for (Estudiante estPlaceholder : c.getEstudiantes()) {
-                if (estPlaceholder.getCodigo() != 0) {
-                    Estudiante eCompleto = estudianteDao.leer(estPlaceholder.getCodigo());
-                    if (eCompleto != null) {
-                        // Hydrate Curso for this Estudiante within Curso's list (if needed by Estudiante.toString called by Curso.infoCurso)
-                        if (eCompleto.getCurso() != null && eCompleto.getCurso().getCodigo() != 0) {
-                            Curso cursoDeEstudiante = cursoDao.leer(eCompleto.getCurso().getCodigo());
-                            eCompleto.setCurso(cursoDeEstudiante); // Set potentially more complete Curso
+            for (Estudiante estudianteMarcadorPosicion : curso.obtenerEstudiantes()) { // 'estPlaceholder' a 'estudianteMarcadorPosicion'
+                if (estudianteMarcadorPosicion.obtenerCodigo() != 0) { // Uso de método traducido
+                    Estudiante estudianteCompleto = estudianteDAO.leerPorId(estudianteMarcadorPosicion.obtenerCodigo()); // 'eCompleto' a 'estudianteCompleto', uso de leerPorId
+                    if (estudianteCompleto != null) {
+                        if (estudianteCompleto.obtenerCurso() != null && estudianteCompleto.obtenerCurso().obtenerCodigo() != 0) { // Uso de métodos traducidos
+                            Curso cursoDeEstudiante = cursoDAO.leerPorId(estudianteCompleto.obtenerCurso().obtenerCodigo()); // Uso de leerPorId
+                            estudianteCompleto.establecerCurso(cursoDeEstudiante); 
                         }
-                        // Asignaturas for Estudiante usually not needed for basic Curso.infoCurso display
-                        estudiantesCompletos.add(eCompleto);
+                        estudiantesCompletos.add(estudianteCompleto);
                     } else {
-                        estudiantesCompletos.add(estPlaceholder); // Keep placeholder
+                        estudiantesCompletos.add(estudianteMarcadorPosicion); 
                     }
                 }
             }
-            c.setEstudiantes(estudiantesCompletos);
+            curso.establecerEstudiantes(estudiantesCompletos); // Uso de método traducido
         }
-        return c.infoCurso();
+        return curso.infoCurso(); // El método infoCurso ya está en español
     }
     
-    // Overload for previous signature, if necessary, but codigoCurso is better
+    // Sobrecarga por compatibilidad, aunque buscar por código es mejor.
     public String infoCurso(int grado, int grupo) {
-        Curso c = buscarCurso(grado, grupo); // This finds by iterating, returns with placeholders
-         if (c == null) {
-            return "Curso no encontrado.";
+        Curso curso = buscarCurso(grado, grupo); // 'c' a 'curso'
+         if (curso == null) {
+            return "Curso no encontrado."; // Mensaje traducido
         }
-        return infoCurso(c.getCodigo()); // Call the codigo-based one for hydration
+        return infoCurso(curso.obtenerCodigo()); // Uso de método traducido
     }
 
-
+    // Lista todos los cursos con su información detallada.
     public String listarTodosLosCursos() {
-        List<Curso> cursos = cursoDao.listarTodos(); // Gets courses with placeholder relations
-        StringBuilder sb = new StringBuilder();
+        List<Curso> cursos = cursoDAO.listarTodos(); 
+        StringBuilder constructorCadena = new StringBuilder(); // 'sb' a 'constructorCadena'
         for (Curso curso : cursos) {
-            // Call the hydrating infoCurso method for each course
-            sb.append(infoCurso(curso.getCodigo())); 
-            sb.append("\n\n");
+            constructorCadena.append(infoCurso(curso.obtenerCodigo())); // Uso de método traducido
+            constructorCadena.append("\n\n");
         }
-        return sb.toString();
+        return constructorCadena.toString();
     }
 
-    // 5. Getters for lists
-    public List<Persona> getPersonas() {
+    // --- Getters para listas de entidades ---
+    public List<Persona> obtenerPersonas() { // Renombrado de getPersonas
         List<Persona> personas = new ArrayList<>();
-        personas.addAll(estudianteDao.listarTodos());
-        personas.addAll(profesorDao.listarTodos());
-        return personas; // These will be objects with placeholder relations
+        personas.addAll(estudianteDAO.listarTodos()); 
+        personas.addAll(profesorDAO.listarTodos()); 
+        return personas; 
     }
 
-    public List<Curso> getCursos() {
-        return cursoDao.listarTodos(); // Objects with placeholder relations
+    public List<Curso> obtenerCursos() { // Renombrado de getCursos
+        return cursoDAO.listarTodos(); 
     }
 
-    public List<Asignatura> getAsignaturas() {
-        return asignaturaDao.listarTodos(); // Objects with their calificaciones (as per AsignaturaDao)
+    public List<Asignatura> obtenerAsignaturas() { // Renombrado de getAsignaturas
+        return asignaturaDAO.listarTodos(); 
     }
     
-    // Getters and Setters for nombre
-    public String getNombre() {
+    // --- Getters y Setters para el nombre del Colegio ---
+    public String obtenerNombre() { // Renombrado de getNombre
         return nombre;
     }
 
-    public void setNombre(String nombre) {
+    public void establecerNombre(String nombre) { // Renombrado de setNombre
         this.nombre = nombre;
     }
 
-    // New method for MenuDocente
-    public List<Estudiante> getEstudiantesPorCurso(int codigoCurso) {
+    // Método para MenuDocente: Obtener estudiantes (hidratados) de un curso específico.
+    public List<Estudiante> obtenerEstudiantesPorCurso(int codigoCurso) { // Renombrado de getEstudiantesPorCurso
         List<Estudiante> estudiantesDelCurso = new ArrayList<>();
-        Curso curso = cursoDao.leer(codigoCurso); // Gets Curso with placeholder Estudiante list
+        Curso curso = cursoDAO.leerPorId(codigoCurso); // Uso de leerPorId
 
-        if (curso != null && curso.getEstudiantes() != null) {
-            for (Estudiante estPlaceholder : curso.getEstudiantes()) {
-                if (estPlaceholder.getCodigo() != 0) {
-                    Estudiante estudianteCompleto = estudianteDao.leer(estPlaceholder.getCodigo());
+        if (curso != null && curso.obtenerEstudiantes() != null) { // Uso de método traducido
+            for (Estudiante estudianteMarcadorPosicion : curso.obtenerEstudiantes()) { // 'estPlaceholder' a 'estudianteMarcadorPosicion'
+                if (estudianteMarcadorPosicion.obtenerCodigo() != 0) { // Uso de método traducido
+                    Estudiante estudianteCompleto = estudianteDAO.leerPorId(estudianteMarcadorPosicion.obtenerCodigo()); // Uso de leerPorId
                     if (estudianteCompleto != null) {
-                        // Hydrate curso for this estudiante as well, if needed for its toString or other methods
-                        if (estudianteCompleto.getCurso() != null && estudianteCompleto.getCurso().getCodigo() != 0) {
-                           Curso cursoDelEstudiante = cursoDao.leer(estudianteCompleto.getCurso().getCodigo());
-                            estudianteCompleto.setCurso(cursoDelEstudiante);
+                        if (estudianteCompleto.obtenerCurso() != null && estudianteCompleto.obtenerCurso().obtenerCodigo() != 0) { // Uso de métodos traducidos
+                           Curso cursoDelEstudiante = cursoDAO.leerPorId(estudianteCompleto.obtenerCurso().obtenerCodigo()); // Uso de leerPorId
+                            estudianteCompleto.establecerCurso(cursoDelEstudiante); // Uso de método traducido
                         }
-                        // Optionally hydrate asignaturas if they are to be displayed in the list
-                        // For now, Estudiante.toString() is basic for this context.
                         estudiantesDelCurso.add(estudianteCompleto);
                     }
                 }
@@ -338,16 +307,15 @@ public class Colegio {
         return estudiantesDelCurso;
     }
 
-    // New method for MenuDocente: Get (hydrated) asignaturas for a specific student
-    public List<Asignatura> getAsignaturasPorEstudiante(int codigoEstudiante) {
+    // Método para MenuDocente: Obtener asignaturas (hidratadas) de un estudiante específico.
+    public List<Asignatura> obtenerAsignaturasPorEstudiante(int codigoEstudiante) { // Renombrado de getAsignaturasPorEstudiante
         List<Asignatura> asignaturasDelEstudiante = new ArrayList<>();
-        Estudiante estudiante = estudianteDao.leer(codigoEstudiante); // Gets Estudiante with placeholder Asignatura list
+        Estudiante estudiante = estudianteDAO.leerPorId(codigoEstudiante); // Uso de leerPorId
 
-        if (estudiante != null && estudiante.getAsignaturas() != null) {
-            for (Asignatura asigPlaceholder : estudiante.getAsignaturas()) {
-                if (asigPlaceholder.getCodigo() != 0) {
-                    // Fetch the full Asignatura object, which includes its list of Calificaciones
-                    Asignatura asignaturaCompleta = asignaturaDao.leer(asigPlaceholder.getCodigo());
+        if (estudiante != null && estudiante.obtenerAsignaturas() != null) { // Uso de método traducido
+            for (Asignatura asignaturaMarcadorPosicion : estudiante.obtenerAsignaturas()) { // 'asigPlaceholder' a 'asignaturaMarcadorPosicion'
+                if (asignaturaMarcadorPosicion.obtenerCodigo() != 0) { // Uso de método traducido
+                    Asignatura asignaturaCompleta = asignaturaDAO.leerPorId(asignaturaMarcadorPosicion.obtenerCodigo()); // Uso de leerPorId
                     if (asignaturaCompleta != null) {
                         asignaturasDelEstudiante.add(asignaturaCompleta);
                     }
@@ -357,44 +325,28 @@ public class Colegio {
         return asignaturasDelEstudiante;
     }
 
-    // New method for MenuDocente: Add a calificacion to an asignatura for a specific student
+    // Método para MenuDocente: Agregar una calificación a una asignatura para un estudiante específico.
     public boolean agregarCalificacionAEstudianteAsignatura(int codigoEstudiante, int codigoAsignatura, Calificacion calificacion) {
-        // The Calificacion is added to the Asignatura object itself.
-        // The Estudiante's enrollment in that Asignatura links them to these grades.
+        // La Calificacion se agrega al objeto Asignatura directamente.
+        // La inscripción del Estudiante en esa Asignatura los vincula a estas calificaciones.
 
-        Asignatura asignatura = asignaturaDao.leer(codigoAsignatura);
+        Asignatura asignatura = asignaturaDAO.leerPorId(codigoAsignatura); // Uso de leerPorId
         if (asignatura == null) {
-            System.err.println("Colegio: Asignatura con código " + codigoAsignatura + " no encontrada.");
+            System.err.println("Colegio: Asignatura con código " + codigoAsignatura + " no encontrada."); // Mensaje traducido
             return false;
         }
 
-        // Validate if student is actually enrolled in the asignatura (optional, but good for data integrity)
-        // This step is implicitly handled if the UI only shows asignaturas the student is enrolled in.
-        // Estudiante estudiante = estudianteDao.leer(codigoEstudiante);
-        // boolean enrolled = false;
-        // if (estudiante != null && estudiante.getAsignaturas() != null) {
-        //     for (Asignatura asigEst : estudiante.getAsignaturas()) {
-        //         if (asigEst.getCodigo() == codigoAsignatura) {
-        //             enrolled = true;
-        //             break;
-        //         }
-        //     }
-        // }
-        // if (!enrolled) {
-        //     System.err.println("Colegio: Estudiante " + codigoEstudiante + " no parece estar en la asignatura " + codigoAsignatura);
-        //     return false; // Or handle as per application rules
-        // }
+        // Validar si el estudiante está realmente inscrito en la asignatura (opcional, pero bueno para la integridad de los datos)
+        // Estudiante estudiante = estudianteDAO.leerPorId(codigoEstudiante); 
+        // ...
 
-
-        // Add calificacion to the main Asignatura object's list of calificaciones
-        if (asignatura.getCalificaciones() == null) {
-            asignatura.setCalificaciones(new ArrayList<>());
+        if (asignatura.obtenerCalificaciones() == null) { // Uso de método traducido
+            asignatura.establecerCalificaciones(new ArrayList<>()); // Uso de método traducido
         }
-        asignatura.getCalificaciones().add(calificacion);
+        asignatura.obtenerCalificaciones().add(calificacion); // Uso de método traducido
         
-        // Update the Asignatura in the file
-        asignaturaDao.actualizar(asignatura);
-        System.out.println("Colegio: Calificación agregada a Asignatura " + codigoAsignatura);
+        asignaturaDAO.actualizar(asignatura); 
+        System.out.println("Colegio: Calificación agregada a Asignatura " + codigoAsignatura); // Mensaje traducido
         return true;
     }
 }

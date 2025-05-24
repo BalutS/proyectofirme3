@@ -7,100 +7,106 @@ package com.modelo;
 import java.util.ArrayList;
 
 /**
- *
- * @author river
+ * Representa una asignatura en el sistema.
+ * @author river // Mantener autor original si se desea
  */
 public class Asignatura {
-    private int codigo; // New field
+    private int codigo; 
     private String nombre;
     private ArrayList<Calificacion> calificaciones;
 
+    // Constructor por defecto
     public Asignatura() {
-        this.codigo = 0; // Initialize codigo
+        this.codigo = 0; // Inicializa el código
         this.calificaciones = new ArrayList<>();
     }
 
     public Asignatura(String nombre) {
-        this(); // Calls default constructor to initialize codigo and calificaciones list
+        this(); // Llama al constructor por defecto para inicializar código y lista de calificaciones
         this.nombre = nombre;
     }
 
-    // Constructor for full reconstruction including codigo
+    // Constructor para reconstrucción completa incluyendo código
     public Asignatura(int codigo, String nombre, ArrayList<Calificacion> calificaciones) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.calificaciones = (calificaciones != null) ? calificaciones : new ArrayList<>();
     }
 
-    // Getter and Setter for codigo
-    public int getCodigo() {
+    // Getter y Setter para codigo
+    public int obtenerCodigo() { // Renombrado de getCodigo
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
+    public void establecerCodigo(int codigo) { // Renombrado de setCodigo
         this.codigo = codigo;
     }
     
-    public void agregarCalificacion(Calificacion cal){
-        getCalificaciones().add(cal);
+    // Agrega una calificación a la lista de calificaciones de la asignatura.
+    public void agregarCalificacion(Calificacion calificacion) { // Parámetro 'cal' a 'calificacion'
+        obtenerCalificaciones().add(calificacion); // Usa obtenerCalificaciones
     }
     
-    public String listarCalificaiones () {
-        String lis = "";
-        for (Calificacion calificacion : getCalificaciones()) {
-            lis += calificacion.toString() + "\n";
+    // Lista todas las calificaciones de la asignatura.
+    public String listarCalificaciones() { // Corregido 'Calificaiones' a 'Calificaciones'
+        String listaStr = ""; // 'lis' a 'listaStr'
+        if (this.calificaciones != null) {
+            for (Calificacion calificacion : obtenerCalificaciones()) { // Usa obtenerCalificaciones
+                listaStr += calificacion.toString() + "\n"; // Calificacion.toString() ya fue adaptado
+            }
         }
-        return lis;
+        return listaStr;
     }
     
-    public float promedio(){
-        if (calificaciones == null || calificaciones.isEmpty()) {
-            return 0.0f; // Or handle as an error/NaN as appropriate
+    // Calcula el promedio de las calificaciones de la asignatura.
+    public float promedio() { // Ya en español
+        if (this.calificaciones == null || this.calificaciones.isEmpty()) {
+            return 0.0f; // Manejo de lista vacía o nula
         }
-        float sum = 0;
-        for (Calificacion calificacion : calificaciones) {
-            sum += calificacion.getNota();
+        float suma = 0; // 'sum' a 'suma'
+        for (Calificacion calificacion : this.calificaciones) {
+            suma += calificacion.obtenerNota(); // Usa Calificacion.obtenerNota()
         }
-        return sum / calificaciones.size();
+        return suma / this.calificaciones.size();
     }
 
     @Override
     public String toString() {
-        // Consider if promedio() can cause issues if calificaciones is empty or null
-        float avg = 0.0f;
-        if (calificaciones != null && !calificaciones.isEmpty()) {
-            avg = promedio();
+        // Considerar si promedio() puede causar problemas si calificaciones es nulo o vacío
+        float promedioCalc = 0.0f; // 'avg' a 'promedioCalc'
+        if (this.calificaciones != null && !this.calificaciones.isEmpty()) {
+            promedioCalc = promedio();
         }
-        return "Asignatura{" + "codigo=" + codigo + ", nombre=" + nombre + ", promedio_calificaciones=" + avg + '}';
+        return "Asignatura{" + "codigo=" + this.codigo + ", nombre=" + this.nombre + ", promedio_calificaciones=" + promedioCalc + '}';
     }
     
     
 
     /**
-     * @return the nombre
+     * @return el nombre
      */
-    public String getNombre() {
+    public String obtenerNombre() { // Renombrado de getNombre
         return nombre;
     }
 
     /**
-     * @param nombre the nombre to set
+     * @param nombre el nombre a establecer
      */
-    public void setNombre(String nombre) {
+    public void establecerNombre(String nombre) { // Renombrado de setNombre
         this.nombre = nombre;
     }
 
     /**
-     * @return the calificaciones
+     * @return las calificaciones
      */
-    public ArrayList<Calificacion> getCalificaciones() {
+    public ArrayList<Calificacion> obtenerCalificaciones() { // Renombrado de getCalificaciones
         return calificaciones;
     }
 
     /**
-     * @param calificaciones the calificaciones to set
+     * @param calificaciones las calificaciones a establecer
      */
-    public void setCalificaciones(ArrayList<Calificacion> calificaciones) {
+    public void establecerCalificaciones(ArrayList<Calificacion> calificaciones) { // Renombrado de setCalificaciones
         this.calificaciones = calificaciones;
     }
 }

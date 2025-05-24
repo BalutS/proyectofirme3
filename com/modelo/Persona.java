@@ -23,80 +23,81 @@ public class Persona {
 
     @Override
     public String toString() {
-        return "nombre: " + getNombre() 
-                + ", edad: " + getEdad() 
-                + ", cedula: " + getCedula() 
-                + ", codigo: " + getCodigo() 
-                + ", codigo: " + getTipo();
+        // Se usan los nuevos nombres de los getters
+        return "nombre: " + obtenerNombre() 
+                + ", edad: " + obtenerEdad() 
+                + ", cedula: " + obtenerCedula() 
+                + ", codigo: " + obtenerCodigo() 
+                + ", tipo: " + obtenerTipo(); // Corregido "codigo: " a "tipo: "
     }
 
     /**
-     * @return the nombre
+     * @return el nombre
      */
-    public String getNombre() {
+    public String obtenerNombre() { // Renombrado de getNombre
         return nombre;
     }
 
     /**
-     * @param nombre the nombre to set
+     * @param nombre el nombre a establecer
      */
-    public void setNombre(String nombre) {
+    public void establecerNombre(String nombre) { // Renombrado de setNombre
         this.nombre = nombre;
     }
 
     /**
-     * @return the edad
+     * @return la edad
      */
-    public int getEdad() {
+    public int obtenerEdad() { // Renombrado de getEdad
         return edad;
     }
 
     /**
-     * @param edad the edad to set
+     * @param edad la edad a establecer
      */
-    public void setEdad(int edad) {
+    public void establecerEdad(int edad) { // Renombrado de setEdad
         this.edad = edad;
     }
 
     /**
-     * @return the cedula
+     * @return la cedula
      */
-    public int getCedula() {
+    public int obtenerCedula() { // Renombrado de getCedula
         return cedula;
     }
 
     /**
-     * @param cedula the cedula to set
+     * @param cedula la cedula a establecer
      */
-    public void setCedula(int cedula) {
+    public void establecerCedula(int cedula) { // Renombrado de setCedula
         this.cedula = cedula;
     }
 
     /**
-     * @return the codigo
+     * @return el codigo
      */
-    public int getCodigo() {
+    public int obtenerCodigo() { // Renombrado de getCodigo
         return codigo;
     }
 
     /**
-     * @param codigo the codigo to set
+     * @param codigo el codigo a establecer
      */
-    public void setCodigo(int codigo) {
+    public void establecerCodigo(int codigo) { // Renombrado de setCodigo
         this.codigo = codigo;
     }
 
     /**
-     * @return the tipo
+     * @return el tipo
      */
-    public String getTipo() {
+    public String obtenerTipo() { // Renombrado de getTipo
         return tipo;
     }
 
     /**
-     * @param tipo the tipo to set
+     * @param tipo el tipo a establecer
      */
-    public void setTipo(String tipo) {
+    public void establecerTipo(String tipo) { // Renombrado de setTipo
         this.tipo = tipo;
     }
     
