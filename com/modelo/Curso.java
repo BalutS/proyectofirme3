@@ -2,133 +2,145 @@ package com.modelo;
 
 import java.util.ArrayList;
 
+// Representa un curso en el sistema educativo.
 public class Curso {
-    private int codigo; // New field
+    private int codigo; // Campo nuevo para identificar el curso
     private int grado;
     private int grupo;
     private ArrayList<Estudiante> estudiantes;
     private Profesor profesor;
 
+    // Constructor por defecto
     public Curso() {
-        this.codigo = 0; // Initialize codigo
-        this.estudiantes = new ArrayList<>(); // Initialize list
-        this.profesor = new Profesor(); // Initialize professor or leave null as per logic
+        this.codigo = 0; // Inicializa el código
+        this.estudiantes = new ArrayList<>(); // Inicializa la lista de estudiantes
+        this.profesor = new Profesor(); // Inicializa el profesor o se deja nulo según la lógica de negocio
     }
 
-    // Modified constructor to include codigo
+    // Constructor modificado para incluir código
     public Curso(int codigo, int grado, int grupo, ArrayList<Estudiante> estudiantes, Profesor profesor) {
         this.codigo = codigo;
         this.grado = grado;
         this.grupo = grupo;
         this.estudiantes = (estudiantes != null) ? estudiantes : new ArrayList<>();
-        this.profesor = (profesor != null) ? profesor : new Profesor(); // Or handle null profesor differently
+        this.profesor = (profesor != null) ? profesor : new Profesor(); // O manejar profesor nulo de forma diferente
     }
 
-    // Original constructor - kept for compatibility or remove if not needed
-    // For now, let's assume it might be used elsewhere and update it to call the new one or initialize codigo
+    // Constructor original - mantenido por compatibilidad o eliminar si no es necesario
+    // Por ahora, se asume que podría usarse en otro lugar y se actualiza para llamar al nuevo o inicializar código
     public Curso(int grado, int grupo, ArrayList<Estudiante> estudiantes) {
-        this(0, grado, grupo, estudiantes, new Profesor()); // Calls the new constructor, default codigo to 0
-        // Alternatively, if this constructor is meant for creating NEW courses before DAO assignment:
-        // this.codigo = 0; // Or some other default indicating "not yet saved"
+        this(0, grado, grupo, estudiantes, new Profesor()); // Llama al nuevo constructor, código por defecto a 0
+        // Alternativamente, si este constructor es para crear NUEVOS cursos antes de la asignación por DAO:
+        // this.codigo = 0; // O algún otro valor por defecto indicando "aún no guardado"
         // this.grado = grado;
         // this.grupo = grupo;
         // this.estudiantes = estudiantes;
         // this.profesor = new Profesor();
     }
 
-    // Getter and Setter for codigo
-    public int getCodigo() {
+    // Getter y Setter para codigo
+    public int obtenerCodigo() { // Renombrado de getCodigo
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
+    public void establecerCodigo(int codigo) { // Renombrado de setCodigo
         this.codigo = codigo;
     }
     
-    public Estudiante buscarEstudiante(int codigo){
-        Estudiante est = null;
-        for (Estudiante estudiante : estudiantes) {
-            if (estudiante.getCodigo() == codigo) {
-                est = estudiante;
+    // Busca un estudiante por su código dentro de la lista de estudiantes del curso.
+    public Estudiante buscarEstudiante(int codigo) { // Parámetro 'codigo' ya está bien
+        Estudiante estudianteEncontrado = null; // 'est' a 'estudianteEncontrado'
+        if (this.estudiantes != null) {
+            for (Estudiante estudiante : this.estudiantes) {
+                // Se asume que Estudiante.obtenerCodigo() es el método traducido
+                if (estudiante.obtenerCodigo() == codigo) { 
+                    estudianteEncontrado = estudiante;
+                    break; // Estudiante encontrado, no es necesario seguir buscando
+                }
             }
         }
-        return est;
+        return estudianteEncontrado;
     }
     
-    public String listarEstudiantes () {
-        String lis = "";
-        for (Estudiante estudiante : estudiantes) {
-            lis += estudiante.toString();
+    // Devuelve una cadena con la lista de estudiantes del curso.
+    public String listarEstudiantes() { // Ya en español
+        String listaStr = ""; // 'lis' a 'listaStr'
+        if (this.estudiantes != null) {
+            for (Estudiante estudiante : this.estudiantes) {
+                listaStr += estudiante.toString() + "\n"; // Estudiante.toString() se mantendrá
+            }
         }
-        return lis;
+        return listaStr;
     }
     
-    public String infoCurso(){
+    // Devuelve información detallada del curso, incluyendo profesor y lista de estudiantes.
+    public String infoCurso() { // Ya en español
         return toString() + "\n"
-                + profesor.toString()
-                + listarEstudiantes();
+                + (this.profesor != null ? this.profesor.toString() : "Profesor: N/A") + "\n" // Manejo de profesor nulo
+                + "Estudiantes:\n" + listarEstudiantes();
     }
     
 
     @Override
     public String toString() {
-        return "codigo: " + codigo + ", curso: " + grado + " - " + grupo
-                + "\n profesor: " + (profesor != null ? profesor.getNombre() : "N/A"); // Improved toString
+        // Se asume que Profesor.obtenerNombre() es el método traducido
+        return "codigo: " + this.codigo + ", curso: " + this.grado + " - " + this.grupo
+                + "\n profesor: " + (this.profesor != null ? this.profesor.obtenerNombre() : "N/A"); // toString mejorado
     }
 
     /**
-     * @return the grado
+     * @return el grado
      */
-    public int getGrado() {
+    public int obtenerGrado() { // Renombrado de getGrado
         return grado;
     }
 
     /**
-     * @param grado the grado to set
+     * @param grado el grado a establecer
      */
-    public void setGrado(int grado) {
+    public void establecerGrado(int grado) { // Renombrado de setGrado
         this.grado = grado;
     }
 
     /**
-     * @return the grupo
+     * @return el grupo
      */
-    public int getGrupo() {
+    public int obtenerGrupo() { // Renombrado de getGrupo
         return grupo;
     }
 
     /**
-     * @param grupo the grupo to set
+     * @param grupo el grupo a establecer
      */
-    public void setGrupo(int grupo) {
+    public void establecerGrupo(int grupo) { // Renombrado de setGrupo
         this.grupo = grupo;
     }
 
     /**
-     * @return the estudiantes
+     * @return los estudiantes
      */
-    public ArrayList<Estudiante> getEstudiantes() {
+    public ArrayList<Estudiante> obtenerEstudiantes() { // Renombrado de getEstudiantes
         return estudiantes;
     }
 
     /**
-     * @param estudiantes the estudiantes to set
+     * @param estudiantes los estudiantes a establecer
      */
-    public void setEstudiantes(ArrayList<Estudiante> estudiantes) {
+    public void establecerEstudiantes(ArrayList<Estudiante> estudiantes) { // Renombrado de setEstudiantes
         this.estudiantes = estudiantes;
     }
 
     /**
-     * @return the profesor
+     * @return el profesor
      */
-    public Profesor getProfesor() {
+    public Profesor obtenerProfesor() { // Renombrado de getProfesor
         return profesor;
     }
 
     /**
-     * @param profesor the profesor to set
+     * @param profesor el profesor a establecer
      */
-    public void setProfesor(Profesor profesor) {
+    public void establecerProfesor(Profesor profesor) { // Renombrado de setProfesor
         this.profesor = profesor;
     }
     

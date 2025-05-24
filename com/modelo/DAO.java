@@ -2,10 +2,10 @@ package com.modelo;
 
 import java.util.List;
 
-public interface Dao<T> {
+public interface DAO<T> { 
     void crear(T entidad);
-    T leer(int id);
+    T leerPorId(int id); // Renombrado de leer
     void actualizar(T entidad);
-    void eliminar(int id);
+    void eliminarPorId(int id); // Renombrado de eliminar
     List<T> listarTodos();
 }
